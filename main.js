@@ -220,6 +220,13 @@ function checkForNonMatchingPasswords(passwordClass, confirmPasswordClass) {
     }
 }
 
+function showPasswordToggle(passwordClass, button) {
+    const passwordInput = document.querySelector(`.${passwordClass}`);
+
+    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    button.innerText = passwordInput.type === 'password' ? 'Show Password' : 'Hide Password';
+}
+
 async function registerNewUser(emailClass, usernameClass, passwordClass) {
     const email = document.querySelector(`.${emailClass}`).value;
     const username = document.querySelector(`.${usernameClass}`).value;
