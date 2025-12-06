@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Creation</title>
+    <link rel="stylesheet" href="main.css">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAyT2IYYSHq4rsujaX4l2N7z6bWjgUIaiw",
+            authDomain: "login-page-ee523.firebaseapp.com",
+            databaseURL: "https://login-page-ee523-default-rtdb.firebaseio.com",
+            projectId: "login-page-ee523",
+            storageBucket: "login-page-ee523.firebasestorage.app",
+            messagingSenderId: "720355310776",
+            appId: "1:720355310776:web:0d299d256136c51b7a484d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Make functions available globally
+        window.firebaseRef = ref;
+        window.firebaseGet = get;
+        window.firebaseSet = set;
+        window.database = database;
+    </script>
+    <script src="main.js" defer></script>
+</head>
+
+<body>
+    <img src="Login Background Image.jpg" alt="Background" class="background-image">
+    <section class="login-section">
+        <h3 class="log-in-text">Sign up</h3> <!-- Title -->
+        <h5 class="username-text">Email</h5> <!-- Email Title -->
+        <input class="username-input email-input" type="text" onchange="checkForInvalidEmail('email-input')"
+            name="username" placeholder=""> <!-- Email Input -->
+        <h5 class="username-text">Username</h5> <!-- Username Title -->
+        <input class="username-input username" type="text" oninput="checkForInvalidUsername('username')" name="username"
+            placeholder=""> <!-- Username Input -->
+        <h5 class="password-text">Password</h5> <!-- Password Title -->
+        <input class="password-input password" type="password" onchange="checkForInvalidPassword('password')"
+            name="password" placeholder=""> <!-- Password Input -->
+        <h5 class="password-text">Confirm Password</h5> <!-- Confirm Password Title -->
+        <input class="password-input confirm-password" type="password" name="password"
+            onchange="checkForNonMatchingPasswords('password', 'confirm-password')" placeholder="">
+        <!-- Confirm Password Input -->
+        <p class="error-message">Invalid username or password.</p> <!-- Error Message -->
+        <button class="login-button signup-button" type="submit"
+            onclick="registerNewUser('email-input', 'username', 'password')">Sign up</button> <!-- Sign Up Button -->
+        <p class="signup-text">Already have an account? <a href="/index.html">Log in</a></p> <!-- Log In Link -->
+    </section>
+</body>
+
+</html>
