@@ -221,9 +221,9 @@ function checkForNonMatchingPasswords(passwordClass, confirmPasswordClass) {
     }
 }
 
-function showPasswordToggle(passwordClass) {
+function showPasswordToggle(passwordClass, passwordSectionClass) {
     const passwordInput = document.querySelector(`.${passwordClass}`);
-    const toggleButton = document.querySelector(`.show-password`);
+    const toggleButton = document.querySelector(`.${passwordSectionClass}`);
 
     passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
     toggleButton.innerText = passwordInput.type === 'password' ? 'Show Password' : 'Hide Password';
