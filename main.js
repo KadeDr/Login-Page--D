@@ -221,12 +221,11 @@ function checkForNonMatchingPasswords(passwordClass, confirmPasswordClass) {
     }
 }
 
-function showPasswordToggle(passwordClass, passwordSectionClass) {
+function showPasswordToggle(passwordClass, button) {
     const passwordInput = document.querySelector(`.${passwordClass}`);
-    const toggleButton = document.querySelector(`.${passwordSectionClass}`);
 
     passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
-    toggleButton.innerText = passwordInput.type === 'password' ? 'Show Password' : 'Hide Password';
+    button.innerText = passwordInput.type === 'password' ? 'Show Password' : 'Hide Password';
 }
 
 async function registerNewUser(emailClass, usernameClass, passwordClass) {

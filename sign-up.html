@@ -44,13 +44,13 @@
             placeholder=""> <!-- Username Input -->
         <div class="password-section">
             <h5 class="password-text">Password</h5> <!-- Password Title -->
-            <button class="show-password show-password-1" type="button" onclick="showPasswordToggle('password', 'show-password-1')">Show Password</button>
+            <button class="show-password" type="button" onclick="showPasswordToggle('password', this)">Show Password</button>
         </div>
         <input class="password-input password" type="password" onchange="checkForInvalidPassword('password')"
             name="password" placeholder=""> <!-- Password Input -->
         <div class="password-section">
             <h5 class="password-text">Confirm Password</h5> <!-- Confirm Password Title -->
-            <button class="show-password show-password-2" type="button" onclick="showPasswordToggle('confirm-password', 'show-password-2')">Show Password</button>
+            <button class="show-password" type="button" onclick="showPasswordToggle('confirm-password', this)">Show Password</button>
         </div>
         <input class="password-input confirm-password" type="password" name="password"
             onchange="checkForNonMatchingPasswords('password', 'confirm-password')" placeholder="">
