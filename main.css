@@ -5,9 +5,13 @@
     --background-color: #f4f4f4;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
-    padding: 0;
+    padding: 20px;
     font-family: var(--font-family);
     font-size: 18px;
     background-color: var(--background-color);
@@ -28,49 +32,71 @@ body {
 }
 
 .login-section {
-    vertical-align: middle;
+    width: 100%;
+    max-width: 450px;
     text-align: center;
-    padding: 0px;
-    margin: 0px;
     display: grid;
     background-color: var(--background-color);
-    padding: 40px;
+    padding: 40px 30px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .log-in-text {
-    font-size: 35px;
+    font-size: clamp(28px, 8vw, 35px);
+    margin: 0 0 30px 0;
 }
 
 .username-input, .password-input {
-    width: 350px;
-    height: 35px;
+    width: 100%;
+    max-width: 350px;
+    height: 40px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 0 auto 15px auto;
+    display: block;
 }
 
 .username-text, .password-text {
-    justify-self: left;
     text-align: left;
     margin-bottom: 5px;
+    margin-top: 10px;
+    font-size: 16px;
 }
 
 .login-button {
-    width: 100px;
-    height: 35px;
+    width: 100%;
+    max-width: 200px;
+    height: 40px;
     margin-top: 20px;
-    border-radius: 100px;
-    border-style: none;
+    border-radius: 25px;
+    border: none;
     background-color: var(--button-color);
     color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-button:hover {
+    background-color: #065a6a;
 }
 
 .signup-text {
     text-align: left;
     margin-top: 30px;
+    font-size: 14px;
 }
 
 .signup-text a {
     color: var(--button-color);
+    text-decoration: none;
+}
+
+.signup-text a:hover {
+    text-decoration: underline;
 }
 
 .error-message {
@@ -78,21 +104,114 @@ body {
     color: red;
     margin-top: 10px;
     text-align: left;
+    font-size: 14px;
 }
 
 .password-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.password-section h5 {
+    margin: 0;
+    flex: 1;
+    min-width: 100px;
 }
 
 .show-password {
-    margin-top: 15px;
-    font-size: 12px;
-    padding: 5px 10px;
+    padding: 8px 12px;
+    font-size: 13px;
     border: none;
     background-color: var(--button-color);
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.3s;
+}
+
+.show-password:hover {
+    background-color: #065a6a;
+}
+
+/* Tablet and smaller screens */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
+    .login-section {
+        padding: 30px 20px;
+        max-width: 100%;
+    }
+
+    .log-in-text {
+        font-size: clamp(24px, 6vw, 30px);
+    }
+
+    .username-input, .password-input {
+        height: 38px;
+        font-size: 16px;
+    }
+
+    .password-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .password-section h5 {
+        margin-bottom: 5px;
+    }
+
+    .show-password {
+        width: 100%;
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .login-section {
+        padding: 25px 15px;
+        border-radius: 10px;
+    }
+
+    .log-in-text {
+        font-size: clamp(20px, 5vw, 26px);
+        margin-bottom: 20px;
+    }
+
+    .username-input, .password-input {
+        height: 36px;
+        font-size: 16px;
+    }
+
+    .username-text, .password-text {
+        font-size: 14px;
+    }
+
+    .login-button {
+        height: 38px;
+        font-size: 15px;
+    }
+
+    .signup-text {
+        font-size: 13px;
+    }
+
+    .show-password {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .error-message {
+        font-size: 13px;
+    }
 }
