@@ -6,46 +6,16 @@ const loginButton = document.querySelector('.login-button');
 const signupButton = document.querySelector('.signup-button');
 
 // ============================================
-// Data Storage
+// Data Storage (for frontend validation only)
 // ============================================
 const data = {
-    emails: [],
-    usernames: [],
-    passwords: [],
     errorQueue: []
 };
 
 // ============================================
-// Firebase Management
+// Backend Configuration
 // ============================================
-async function loadDataFromFirebase() {
-    try {
-        const snapshot = await window.firebaseGet(window.firebaseRef(window.database, 'users'));
-        
-        if (snapshot.exists()) {
-            const users = snapshot.val();
-            data.emails = users.emails || [];
-            data.usernames = users.usernames || [];
-            data.passwords = users.passwords || [];
-            console.log('Data loaded from Firebase:', data);
-        }
-    } catch (error) {
-        console.error('Error loading data from Firebase:', error);
-    }
-}
-
-async function saveDataToFirebase() {
-    try {
-        await window.firebaseSet(window.firebaseRef(window.database, 'users'), {
-            emails: data.emails,
-            usernames: data.usernames,
-            passwords: data.passwords
-        });
-        console.log('Data saved to Firebase');
-    } catch (error) {
-        console.error('Error saving data to Firebase:', error);
-    }
-}
+const BACKEND_URL = 'http://162.192.243.221:3000'; // Change this when deploying
 
 // ============================================
 // Error Management
@@ -112,7 +82,7 @@ const Validators = {
 // ============================================
 // Public Functions
 // ============================================
-function registerUser(usernameClass, passwordClass) {
+async function registerUser(usernameClass, passwordClass) {
     const username = document.querySelector(`.${usernameClass}`).value;
     const password = document.querySelector(`.${passwordClass}`).value;
 
@@ -129,14 +99,26 @@ function registerUser(usernameClass, passwordClass) {
         return;
     }
 
-    const userArray = Validators.isEmail(username) ? data.emails : data.usernames;
-    const isValid = userArray.some((u, i) => u === username && data.passwords[i] === password);
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
 
-    if (isValid) {
-        ErrorManager.clear();
-        ErrorManager.add('SUCCESS', 'Successfully logged in');
-    } else {
-        ErrorManager.add('INVALID_CREDS', 'Invalid username or password.');
+        const result = await response.json();
+
+        if (response.ok) {
+            ErrorManager.clear();
+            ErrorManager.add('SUCCESS', 'Successfully logged in');
+        } else {
+            ErrorManager.add('INVALID_CREDS', result.error || 'Invalid username or password.');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        ErrorManager.add('SERVER_ERROR', 'Could not connect to server. Make sure backend is running.');
     }
 }
 
@@ -167,11 +149,6 @@ function checkForInvalidUsername(usernameClass) {
 
     if (Validators.isEmail(username)) {
         ErrorManager.add('INVALID_USERNAME_EMAIL', 'Username cannot include the following characters: @');
-        return;
-    }
-
-    if (data.usernames.includes(username)) {
-        ErrorManager.add('USERNAME_TAKEN', 'Username is already taken.');
         return;
     }
 
@@ -231,6 +208,7 @@ async function registerNewUser(emailClass, usernameClass, passwordClass) {
     const email = document.querySelector(`.${emailClass}`).value;
     const username = document.querySelector(`.${usernameClass}`).value;
     const password = document.querySelector(`.${passwordClass}`).value;
+    const confirmPassword = document.querySelector('.confirm-password').value;
 
     // Run all validations
     checkForInvalidEmail(emailClass);
@@ -248,19 +226,30 @@ async function registerNewUser(emailClass, usernameClass, passwordClass) {
         return;
     }
 
-    // Add user to storage
-    data.emails.push(email);
-    data.usernames.push(username);
-    data.passwords.push(password);
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/signup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, username, password, confirmPassword })
+        });
 
-    // Save to Firebase
-    await saveDataToFirebase();
-    
-    ErrorManager.clear();
-    ErrorManager.add('SUCCESS', 'Account created successfully!');
+        const result = await response.json();
+
+        if (response.ok) {
+            ErrorManager.clear();
+            ErrorManager.add('SUCCESS', 'Account created successfully!');
+            // Optionally clear form fields
+            document.querySelector(`.${emailClass}`).value = '';
+            document.querySelector(`.${usernameClass}`).value = '';
+            document.querySelector(`.${passwordClass}`).value = '';
+            document.querySelector('.confirm-password').value = '';
+        } else {
+            ErrorManager.add('SIGNUP_FAILED', result.error || 'Failed to create account');
+        }
+    } catch (error) {
+        console.error('Signup error:', error);
+        ErrorManager.add('SERVER_ERROR', 'Could not connect to server. Make sure backend is running.');
+    }
 }
-
-// ============================================
-// Initialize on Page Load
-// ============================================
-document.addEventListener('DOMContentLoaded', loadDataFromFirebase);
