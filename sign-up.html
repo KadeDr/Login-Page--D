@@ -42,10 +42,16 @@
         <h5 class="username-text">Username</h5> <!-- Username Title -->
         <input class="username-input username" type="text" oninput="checkForInvalidUsername('username')" name="username"
             placeholder=""> <!-- Username Input -->
-        <h5 class="password-text">Password</h5> <!-- Password Title -->
+        <section class="password-section">
+            <h5 class="password-text">Password</h5> <!-- Password Title -->
+            <button class="show-password" type="button" onclick="showPasswordToggle('password')">Show Password</button>
+        </section>
         <input class="password-input password" type="password" onchange="checkForInvalidPassword('password')"
             name="password" placeholder=""> <!-- Password Input -->
-        <h5 class="password-text">Confirm Password</h5> <!-- Confirm Password Title -->
+        <section class="password-section">
+            <h5 class="password-text">Confirm Password</h5> <!-- Confirm Password Title -->
+            <button class="show-password" type="button" onclick="showPasswordToggle('confirm-password')">Show Password</button>
+        </section>
         <input class="password-input confirm-password" type="password" name="password"
             onchange="checkForNonMatchingPasswords('password', 'confirm-password')" placeholder="">
         <!-- Confirm Password Input -->

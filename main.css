@@ -79,3 +79,20 @@ body {
     margin-top: 10px;
     text-align: left;
 }
+
+.password-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.show-password {
+    margin-top: 15px;
+    font-size: 12px;
+    padding: 5px 10px;
+    border: none;
+    background-color: var(--button-color);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
