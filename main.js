@@ -15,7 +15,7 @@ const data = {
 // ============================================
 // Backend Configuration
 // ============================================
-const BACKEND_URL = 'http://162.192.243.221:3000'; // Change this when deploying
+const BACKEND_URL = 'http://162.194.243.221:3000'; // Change this when deploying
 
 // ============================================
 // Error Management
