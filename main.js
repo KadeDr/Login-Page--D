@@ -144,8 +144,7 @@ function checkForInvalidEmail(emailClass) {
     const email = document.querySelector(`.${emailClass}`).value;
 
     if (!email) {
-        ErrorManager.remove('INVALID_EMAIL_FORMAT');
-        ErrorManager.remove('EMPTY_EMAIL');
+        ErrorManager.add('EMPTY_EMAIL', 'Email cannot be empty.');
         return;
     }
 
@@ -162,8 +161,7 @@ function checkForInvalidUsername(usernameClass) {
     const username = document.querySelector(`.${usernameClass}`).value;
 
     if (!username) {
-        ErrorManager.remove('INVALID_USERNAME_EMAIL');
-        ErrorManager.remove('USERNAME_TAKEN');
+        ErrorManager.add('EMPTY_USERNAME', 'Username cannot be empty.');
         return;
     }
 
@@ -179,14 +177,15 @@ function checkForInvalidUsername(usernameClass) {
 
     ErrorManager.remove('INVALID_USERNAME_EMAIL');
     ErrorManager.remove('USERNAME_TAKEN');
+    ErrorManager.remove('EMPTY_USERNAME');
 }
 
 function checkForInvalidPassword(passwordClass) {
     const password = document.querySelector(`.${passwordClass}`).value;
-    const errorCodes = ['PASSWORD_TOO_SHORT', 'NO_UPPERCASE', 'NO_NUMBER', 'NO_SPECIAL_CHAR'];
+    const errorCodes = ['PASSWORD_TOO_SHORT', 'NO_UPPERCASE', 'NO_NUMBER', 'NO_SPECIAL_CHAR', 'EMPTY_PASSWORD'];
 
     if (!password) {
-        errorCodes.forEach(code => ErrorManager.remove(code));
+        ErrorManager.add('EMPTY_PASSWORD', 'Password cannot be empty.');
         return;
     }
 
@@ -221,17 +220,16 @@ function checkForNonMatchingPasswords(passwordClass, confirmPasswordClass) {
     }
 }
 
-function showPasswordToggle(passwordClass, button) {
-    const passwordInput = document.querySelector(`.${passwordClass}`);
-
-    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
-    button.innerText = passwordInput.type === 'password' ? 'Show Password' : 'Hide Password';
-}
-
 async function registerNewUser(emailClass, usernameClass, passwordClass) {
     const email = document.querySelector(`.${emailClass}`).value;
     const username = document.querySelector(`.${usernameClass}`).value;
     const password = document.querySelector(`.${passwordClass}`).value;
+
+    // Run all validations
+    checkForInvalidEmail(emailClass);
+    checkForInvalidUsername(usernameClass);
+    checkForInvalidPassword(passwordClass);
+    checkForNonMatchingPasswords(passwordClass, 'confirm-password');
 
     if (ErrorManager.hasErrors()) {
         ErrorManager.add('SIGNUP_ERROR', 'Please fix all errors before signing up.');
