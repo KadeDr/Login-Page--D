@@ -1,60 +1,4 @@
-.password-section {
-    margin-top: 15px;
-    margin-bottom: 15px;
-}
-
-.password-section h5 {
-    margin: 0 0 8px 0;
-    text-align: left;
-    display: block;
-    float: left;
-}
-
-.password-section .password-input {
-    clear: both;
-    display: block;
-    width: 100%;
-    height: 40px;
-    padding: 10px 12px;
-    font-size: 16px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    margin: 0;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-    font-family: inherit;
-}
-
-.password-section .password-input:focus {
-    outline: none;
-    border-color: var(--button-color);
-    box-shadow: 0 0 0 3px rgba(13, 122, 138, 0.1);
-}
-
-.show-password {
-    padding: 8px 16px;
-    font-size: 12px;
-    border: 1.5px solid var(--button-color);
-    background-color: transparent;
-    color: var(--button-color);
-    border-radius: 6px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    float: right;
-    margin-bottom: 8px;
-    box-sizing: border-box;
-    max-width: 150px;
-    letter-spacing: 0.3px;
-}
-
-.show-password:hover {
-    background-color: var(--button-color);
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(13, 122, 138, 0.3);
-}:root {
+:root {
     --font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
     --button-color: #0d7a8a;
     --button-color-light: #1a9fb5;
@@ -111,12 +55,20 @@ body {
     width: 100%;
     max-width: 390px;
     height: 40px;
-    padding: 10px;
+    padding: 10px 12px;
     font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
     margin: 0 auto 15px auto;
     display: block;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.username-input:focus, .password-input:focus {
+    outline: none;
+    border-color: var(--button-color);
+    box-shadow: 0 0 0 3px rgba(13, 122, 138, 0.1);
 }
 
 .password-input-wrapper {
@@ -151,6 +103,64 @@ body {
     font-weight: 500;
     color: var(--text-color);
     letter-spacing: 0.3px;
+}
+
+.password-section {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.password-section h5 {
+    margin: 0 0 8px 0;
+    text-align: left;
+    display: block;
+    float: left;
+}
+
+.password-section .password-input {
+    clear: both;
+    display: block;
+    width: 100%;
+    height: 40px;
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    margin: 0;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.password-section .password-input:focus {
+    outline: none;
+    border-color: var(--button-color);
+    box-shadow: 0 0 0 3px rgba(13, 122, 138, 0.1);
+}
+
+.show-password {
+    padding: 8px 16px;
+    font-size: 12px;
+    border: 1.5px solid var(--button-color);
+    background-color: transparent;
+    color: var(--button-color);
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    float: right;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    max-width: 150px;
+    letter-spacing: 0.3px;
+}
+
+.show-password:hover {
+    background-color: var(--button-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(13, 122, 138, 0.3);
 }
 
 .login-button {
@@ -199,7 +209,20 @@ body {
     font-size: 14px;
 }
 
+.credits {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    font-size: 12px;
+    color: var(--text-color);
+    margin: 0;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
 
+.credits:hover {
+    opacity: 1;
+}
 
 /* Tablet and smaller screens */
 @media (max-width: 768px) {
