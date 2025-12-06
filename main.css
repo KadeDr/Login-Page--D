@@ -32,7 +32,7 @@ body {
 }
 
 .login-section {
-    width: 100%;
+    width: 90%;
     max-width: 450px;
     text-align: center;
     display: grid;
@@ -181,6 +181,7 @@ body {
     .login-section {
         padding: 25px 15px;
         border-radius: 10px;
+        width: 100%;
     }
 
     .log-in-text {
@@ -191,6 +192,7 @@ body {
     .username-input, .password-input {
         height: 36px;
         font-size: 16px;
+        max-width: 100%;
     }
 
     .username-text, .password-text {
