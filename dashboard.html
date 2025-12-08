@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MECH & Cheese - Team 5103 Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0f3460 0%, #16213e 100%);
+            border-right: 2px solid #ff6b35;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #0f3460 0%, #1a5490 100%);
+            border-bottom: 3px solid #ff6b35;
+        }
+
+        .team-logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .team-number {
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4a90e2 0%, #ff6b35 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        .team-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6b35;
+            text-align: center;
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            padding: 15px 25px;
+            margin: 5px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            color: #b0b0b0;
+        }
+
+        .nav-item:hover {
+            background: rgba(74, 144, 226, 0.2);
+            color: #4a90e2;
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+        }
+
+        .nav-item.hidden {
+            display: none;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4a90e2 0%, #ff6b35 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .user-details {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #e0e0e0;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #ff6b35;
+            text-transform: capitalize;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff6b35 0%, #e84118 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .top-bar {
+            background: rgba(15, 52, 96, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            border-bottom: 2px solid rgba(255, 107, 53, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4a90e2;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            background: rgba(74, 144, 226, 0.2);
+            border: 1px solid #4a90e2;
+            border-radius: 8px;
+            color: #4a90e2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .action-btn:hover {
+            background: #4a90e2;
+            color: white;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        /* Dashboard Widgets */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .widget {
+            background: linear-gradient(135deg, rgba(15, 52, 96, 0.6) 0%, rgba(22, 33, 62, 0.6) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .widget:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.2);
+            border-color: #4a90e2;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .widget-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4a90e2;
+        }
+
+        .widget-icon {
+            font-size: 24px;
+            color: #ff6b35;
+        }
+
+        .widget-content {
+            color: #b0b0b0;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ff6b35;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .announcement-item, .event-item {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border-left: 3px solid #ff6b35;
+        }
+
+        .announcement-title, .event-title {
+            font-weight: 600;
+            color: #e0e0e0;
+            margin-bottom: 5px;
+        }
+
+        .announcement-time, .event-date {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .quick-action-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px;
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+        }
+
+        .quick-action-btn.orange {
+            background: linear-gradient(135deg, #ff6b35 0%, #e84118 100%);
+        }
+
+        .quick-action-btn.orange:hover {
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        /* Section Content (hidden by default) */
+        .section-content {
+            display: none;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        /* Welcome Message */
+        .welcome-banner {
+            background: linear-gradient(135deg, #4a90e2 0%, #ff6b35 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .welcome-text {
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .welcome-subtext {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Admin Panel Styles */
+        .admin-section {
+            margin-bottom: 40px;
+        }
+
+        .admin-section-title {
+            font-size: 24px;
+            color: #4a90e2;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(74, 144, 226, 0.3);
+        }
+
+        .user-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-card-info {
+            flex: 1;
+        }
+
+        .user-card-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e0e0e0;
+            margin-bottom: 5px;
+        }
+
+        .user-card-email {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .user-card-role {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(74, 144, 226, 0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            color: #4a90e2;
+            text-transform: capitalize;
+        }
+
+        .user-card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+        }
+
+        .btn-approve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+        }
+
+        .btn-deny {
+            background: linear-gradient(135deg, #ff6b35 0%, #e84118 100%);
+            color: white;
+        }
+
+        .btn-deny:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(74, 144, 226, 0.2);
+            border-top: 4px solid #4a90e2;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Placeholder sections */
+        .placeholder-section {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .placeholder-icon {
+            font-size: 80px;
+            color: #4a90e2;
+            margin-bottom: 20px;
+        }
+
+        .placeholder-title {
+            font-size: 32px;
+            color: #e0e0e0;
+            margin-bottom: 15px;
+        }
+
+        .placeholder-text {
+            font-size: 18px;
+            color: #888;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4a90e2;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff6b35;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="team-logo">
+                    <div class="team-number">5103</div>
+                    <div class="team-name">MECH & Cheese</div>
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <div class="nav-item active" data-section="dashboard" data-min-role="parent">
+                    <span class="nav-icon">🏠</span>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" data-section="hours" data-min-role="student">
+                    <span class="nav-icon">⏱️</span>
+                    <span>Hours Tracker</span>
+                </div>
+                <div class="nav-item" data-section="tasks" data-min-role="student">
+                    <span class="nav-icon">✅</span>
+                    <span>Task Board</span>
+                </div>
+                <div class="nav-item" data-section="scouting" data-min-role="student">
+                    <span class="nav-icon">🔍</span>
+                    <span>Scouting</span>
+                </div>
+                <div class="nav-item" data-section="schedule" data-min-role="parent">
+                    <span class="nav-icon">📅</span>
+                    <span>Match Schedule</span>
+                </div>
+                <div class="nav-item" data-section="announcements" data-min-role="parent">
+                    <span class="nav-icon">📢</span>
+                    <span>Announcements</span>
+                </div>
+                <div class="nav-item" data-section="resources" data-min-role="student">
+                    <span class="nav-icon">📚</span>
+                    <span>Team Resources</span>
+                </div>
+                <div class="nav-item" data-section="chat" data-min-role="student">
+                    <span class="nav-icon">💬</span>
+                    <span>Team Chat</span>
+                </div>
+                <div class="nav-item" data-section="messages" data-min-role="parent">
+                    <span class="nav-icon">📧</span>
+                    <span>Messages</span>
+                </div>
+                <div class="nav-item" data-section="inventory" data-min-role="lead">
+                    <span class="nav-icon">📦</span>
+                    <span>Inventory</span>
+                </div>
+                <div class="nav-item" data-section="robot" data-min-role="student">
+                    <span class="nav-icon">🤖</span>
+                    <span>Robot Docs</span>
+                </div>
+                <div class="nav-item" data-section="team" data-min-role="parent">
+                    <span class="nav-icon">👥</span>
+                    <span>Team Roster</span>
+                </div>
+                <div class="nav-item" data-section="admin" data-min-role="mentor">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Admin Panel</span>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">Loading...</div>
+                        <div class="user-role" id="userRole">Loading...</div>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div class="page-title" id="pageTitle">Dashboard</div>
+                <div class="top-actions">
+                    <button class="action-btn">🔔 Notifications</button>
+                    <button class="action-btn">⚙️ Settings</button>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <!-- Dashboard Section -->
+                <div class="section-content active" id="section-dashboard">
+                    <div class="welcome-banner">
+                        <div class="welcome-text">Welcome back, <span id="welcomeName">Team Member</span>!</div>
+                        <div class="welcome-subtext">Ready to build some robots? 🤖🧀</div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <!-- Hours Widget -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <div class="widget-title">Your Hours</div>
+                                <div class="widget-icon">⏱️</div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="stat-number">0</div>
+                                <div class="stat-label">Hours logged this season</div>
+                            </div>
+                        </div>
+
+                        <!-- Tasks Widget -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <div class="widget-title">Your Tasks</div>
+                                <div class="widget-icon">✅</div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="stat-number">0</div>
+                                <div class="stat-label">Pending tasks</div>
+                            </div>
+                        </div>
+
+                        <!-- Team Stats -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <div class="widget-title">Team Activity</div>
+                                <div class="widget-icon">👥</div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="stat-number">1</div>
+                                <div class="stat-label">Active members</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <!-- Upcoming Events -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <div class="widget-title">Upcoming Events</div>
+                                <div class="widget-icon">📅</div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="event-item">
+                                    <div class="event-title">Build Session</div>
+                                    <div class="event-date">Coming soon...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Announcements -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <div class="widget-title">Announcements</div>
+                                <div class="widget-icon">📢</div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="announcement-item">
+                                    <div class="announcement-title">Welcome to the team platform!</div>
+                                    <div class="announcement-time">Just now</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <div class="widget-title">Quick Actions</div>
+                                <div class="widget-icon">⚡</div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="quick-actions">
+                                    <button class="quick-action-btn" onclick="navigateTo('hours')">Log Hours</button>
+                                    <button class="quick-action-btn orange" onclick="navigateTo('tasks')">View Tasks</button>
+                                    <button class="quick-action-btn" onclick="navigateTo('schedule')">Schedule</button>
+                                    <button class="quick-action-btn orange" onclick="navigateTo('announcements')">News</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Panel Section -->
+                <div class="section-content" id="section-admin">
+                    <div class="admin-section">
+                        <div class="admin-section-title">⏳ Pending User Approvals</div>
+                        <div id="pendingUsersList" class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+
+                    <div class="admin-section">
+                        <div class="admin-section-title">👥 All Team Members</div>
+                        <div id="allUsersList" class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+
+                    <div class="admin-section">
+                        <div class="admin-section-title">⚙️ Team Settings</div>
+                        <div class="widget">
+                            <div class="widget-content">
+                                <p style="color: #888;">Team settings management coming soon...</p>
+                                <p style="color: #888; margin-top: 10px;">• Change team code</p>
+                                <p style="color: #888;">• Update default theme</p>
+                                <p style="color: #888;">• Manage team information</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other sections (placeholders) -->
+                <div class="section-content" id="section-hours">
+                    <div class="placeholder-section">
+                        <div class="placeholder-icon">⏱️</div>
+                        <div class="placeholder-title">Hours Tracker</div>
+                        <div class="placeholder-text">Coming soon! Track your build hours here.</div>
+                    </div>
+                </div>
+
+                <div class="section-content" id="section-tasks">
+                    <div class="placeholder-section">
+                        <div class="placeholder-icon">✅</div>
+                        <div class="placeholder-title">Task Board</div>
+                        <div class="placeholder-text">Coming soon! Manage team tasks with a Kanban board.</div>
+                    </div>
+                </div>
+
+                <div class="section-content" id="section-scouting">
+                    <div class="placeholder-section">
+                        <div class="placeholder-icon">🔍</div>
+                        <div class="placeholder-title">Scouting System</div>
+                        <div class="placeholder-text">Coming soon! Scout teams during competitions.</div>
+                    </div>
+                </div>
+
+                <div class="section-content" id="section-schedule">
+                    <div class="placeholder-section">
+                        <div class="placeholder-icon">📅</div>
+                        <div class="placeholder-title">Match Schedule</div>
+                        <div class="placeholder-text">Coming soon! View competition schedules.</div>
+                    </div>
+                </div>
+
+                <div class="section-content" id="section-announcements">
+                    <div class="placeholder-section">
+                        <div class="placeholder-icon">📢</div>
+                        <div class="placeholder-title">Announcements</div>
+                        <div class="placeholder-text">Coming soon! Team-wide announcements and updates.</div>
+                    </div>
+                </div>
+
+                <div class="section-content" id="section-resources">
+                    <div class="placeholder-section">
+                        <div class="placeholder-icon">📚</div>
+                        <div class="placeholder-title">Team Resources</div>
+                        <div class="placeholder-text">Coming soon! Access team documents and resources.</div>
+                    </div>
+                </div>
+
+                <div class="section-content" id="section-chat">
+                    <div class="placeholder-section">
+                        <div class="placeholder-icon">💬</div>
+                        <div class="placeholder-title">Team Chat</div>
+                        <div class="placeholder-text">Coming soon! Real-time chat with team members.</div>
+                    </div>
+                </div>
+
+                <div class="section-content" id="section-messages">
+                    <div class="placeholder-section">
+                        <div class="placeholder-icon">📧</div>
+                        <div class="placeholder-title">Messages</div>
+                        <div class="placeholder-text">Coming soon! Private messaging with coaches.</div>
+                    </div>
+                </div>
+
+                <div class="section-content" id="section-inventory">
+                    <div class="placeholder-section">
+                        <div class="placeholder-icon">📦</div>
+                        <div class="placeholder-title">Inventory Management</div>
+                        <div class="placeholder-text">Coming soon! Track parts and tools.</div>
+                    </div>
+                </div>
+
+                <div class="section-content" id="section-robot">
+                    <div class="placeholder-section">
+                        <div class="placeholder-icon">🤖</div>
+                        <div class="placeholder-title">Robot Documentation</div>
+                        <div class="placeholder-text">Coming soon! Document your robot's design and maintenance.</div>
+                    </div>
+                </div>
+
+                <div class="section-content" id="section-team">
+                    <div class="placeholder-section">
+                        <div class="placeholder-icon">👥</div>
+                        <div class="placeholder-title">Team Roster</div>
+                        <div class="placeholder-text">Coming soon! View team members and contact info.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // Configuration
+        // ============================================
+        const BACKEND_URL = 'YOUR_NGROK_URL_HERE'; // Replace with your ngrok URL
+
+        // Role hierarchy for permissions
+        const ROLE_LEVELS = {
+            'parent': 1,
+            'student': 2,
+            'lead': 3,
+            'mentor': 5,
+            'coach': 5
+        };
+
+        // ============================================
+        // User Management
+        // ============================================
+        let currentUser = null;
+
+        // Check if user is logged in
+        function checkAuth() {
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(userStr);
+            updateUI();
+            setupNavigation();
+            
+            // Load admin panel if user has access
+            if (hasPermission('mentor')) {
+                loadAdminData();
+            }
+        }
+
+        // Update UI with user info
+        function updateUI() {
+            const firstName = currentUser.name.split(' ')[0];
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userRole').textContent = currentUser.role;
+            document.getElementById('welcomeName').textContent = firstName;
+            document.getElementById('userAvatar').textContent = firstName.charAt(0).toUpperCase();
+        }
+
+        // Check if user has

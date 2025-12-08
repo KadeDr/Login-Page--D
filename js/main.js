@@ -15,7 +15,7 @@ const data = {
 // ============================================
 // Backend Configuration
 // ============================================
-const BACKEND_URL = 'https://shirleen-unreorganised-flatfootedly.ngrok-free.dev'; // Change this when deploying
+const BACKEND_URL = 'https://shirleen-unreorganised-flatfootedly.ngrok-free.dev'; // Your ngrok URL
 
 // ============================================
 // Error Management
@@ -80,18 +80,18 @@ const Validators = {
 };
 
 // ============================================
-// Public Functions
+// LOGIN FUNCTION (Updated for new backend)
 // ============================================
 async function registerUser(usernameClass, passwordClass) {
-    const username = document.querySelector(`.${usernameClass}`).value;
+    const email = document.querySelector(`.${usernameClass}`).value;
     const password = document.querySelector(`.${passwordClass}`).value;
 
-    if (!username && !password) {
-        ErrorManager.add('EMPTY_BOTH', 'Username and password cannot be empty.');
+    if (!email && !password) {
+        ErrorManager.add('EMPTY_BOTH', 'Email and password cannot be empty.');
         return;
     }
-    if (!username) {
-        ErrorManager.add('EMPTY_USERNAME', 'Username cannot be empty.');
+    if (!email) {
+        ErrorManager.add('EMPTY_USERNAME', 'Email cannot be empty.');
         return;
     }
     if (!password) {
@@ -105,23 +105,42 @@ async function registerUser(usernameClass, passwordClass) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ 
+                email: email,
+                password: password
+            })
         });
 
         const result = await response.json();
 
-        if (response.ok) {
+        if (response.ok && result.success) {
             ErrorManager.clear();
-            ErrorManager.add('SUCCESS', 'Successfully logged in');
+            
+            // Store user data and redirect to dashboard
+            localStorage.setItem('currentUser', JSON.stringify(result.user));
+            localStorage.setItem('userEmail', result.user.email);
+            
+            // Redirect to dashboard
+            window.location.href = 'dashboard.html';
         } else {
-            ErrorManager.add('INVALID_CREDS', result.error || 'Invalid username or password.');
+            // Handle different error cases
+            if (result.status === 'pending') {
+                ErrorManager.add('PENDING_APPROVAL', 'Your account is pending approval by a coach.');
+            } else if (result.status === 'denied') {
+                ErrorManager.add('ACCOUNT_DENIED', 'Your account has been denied access.');
+            } else {
+                ErrorManager.add('INVALID_CREDS', result.error || 'Invalid email or password.');
+            }
         }
     } catch (error) {
         console.error('Login error:', error);
-        ErrorManager.add('SERVER_ERROR', 'Could not connect to server. Make sure backend is running.');
+        ErrorManager.add('SERVER_ERROR', 'Could not connect to server. Please check your connection.');
     }
 }
 
+// ============================================
+// Validation Functions
+// ============================================
 function checkForInvalidEmail(emailClass) {
     const email = document.querySelector(`.${emailClass}`).value;
 
@@ -204,6 +223,9 @@ function showPasswordToggle(passwordClass, button) {
     button.innerText = passwordInput.type === 'password' ? 'Show Password' : 'Hide Password';
 }
 
+// ============================================
+// SIGNUP FUNCTION (Keep for now - we'll replace this later)
+// ============================================
 async function registerNewUser(emailClass, usernameClass, passwordClass) {
     const email = document.querySelector(`.${emailClass}`).value;
     const username = document.querySelector(`.${usernameClass}`).value;
