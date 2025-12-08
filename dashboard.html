@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -276,7 +277,8 @@
             color: #888;
         }
 
-        .announcement-item, .event-item {
+        .announcement-item,
+        .event-item {
             padding: 15px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
@@ -284,13 +286,15 @@
             border-left: 3px solid #ff6b35;
         }
 
-        .announcement-title, .event-title {
+        .announcement-title,
+        .event-title {
             font-weight: 600;
             color: #e0e0e0;
             margin-bottom: 5px;
         }
 
-        .announcement-time, .event-date {
+        .announcement-time,
+        .event-date {
             font-size: 12px;
             color: #888;
         }
@@ -480,8 +484,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Placeholder sections */
@@ -526,6 +535,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -698,9 +708,11 @@
                             <div class="widget-content">
                                 <div class="quick-actions">
                                     <button class="quick-action-btn" onclick="navigateTo('hours')">Log Hours</button>
-                                    <button class="quick-action-btn orange" onclick="navigateTo('tasks')">View Tasks</button>
+                                    <button class="quick-action-btn orange" onclick="navigateTo('tasks')">View
+                                        Tasks</button>
                                     <button class="quick-action-btn" onclick="navigateTo('schedule')">Schedule</button>
-                                    <button class="quick-action-btn orange" onclick="navigateTo('announcements')">News</button>
+                                    <button class="quick-action-btn orange"
+                                        onclick="navigateTo('announcements')">News</button>
                                 </div>
                             </div>
                         </div>
@@ -832,7 +844,7 @@
         // ============================================
         // Configuration
         // ============================================
-        const BACKEND_URL = 'YOUR_NGROK_URL_HERE'; // Replace with your ngrok URL
+        const BACKEND_URL = 'https://shirleen-unreorganised-flatfootedly.ngrok-free.dev'; // Replace with your ngrok URL
 
         // Role hierarchy for permissions
         const ROLE_LEVELS = {
@@ -855,11 +867,11 @@
                 window.location.href = 'index.html';
                 return;
             }
-            
+
             currentUser = JSON.parse(userStr);
             updateUI();
             setupNavigation();
-            
+
             // Load admin panel if user has access
             if (hasPermission('mentor')) {
                 loadAdminData();
@@ -875,4 +887,278 @@
             document.getElementById('userAvatar').textContent = firstName.charAt(0).toUpperCase();
         }
 
-        // Check if user has
+        // Check if user has permission
+        function hasPermission(minRole) {
+            return ROLE_LEVELS[currentUser.role] >= ROLE_LEVELS[minRole];
+        }
+
+        // ============================================
+        // Navigation
+        // ============================================
+        function setupNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+
+            // Show/hide nav items based on role
+            navItems.forEach(item => {
+                const minRole = item.getAttribute('data-min-role');
+                if (minRole && !hasPermission(minRole)) {
+                    item.classList.add('hidden');
+                }
+
+                // Add click handler
+                item.addEventListener('click', () => {
+                    if (!item.classList.contains('hidden')) {
+                        navigateTo(item.getAttribute('data-section'));
+                    }
+                });
+            });
+        }
+
+        function navigateTo(sectionName) {
+            // Remove active class from all items
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+
+            // Add active class to clicked item
+            const navItem = document.querySelector(`[data-section="${sectionName}"]`);
+            if (navItem) {
+                navItem.classList.add('active');
+            }
+
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(section => section.classList.remove('active'));
+
+            // Show selected section
+            const section = document.getElementById(`section-${sectionName}`);
+            if (section) {
+                section.classList.add('active');
+            }
+
+            // Update page title
+            const titles = {
+                'dashboard': 'Dashboard',
+                'hours': 'Hours Tracker',
+                'tasks': 'Task Board',
+                'scouting': 'Scouting System',
+                'schedule': 'Match Schedule',
+                'announcements': 'Announcements',
+                'resources': 'Team Resources',
+                'chat': 'Team Chat',
+                'messages': 'Messages',
+                'inventory': 'Inventory Management',
+                'robot': 'Robot Documentation',
+                'team': 'Team Roster',
+                'admin': 'Admin Panel'
+            };
+            document.getElementById('pageTitle').textContent = titles[sectionName] || 'Dashboard';
+        }
+
+        // ============================================
+        // Admin Panel Functions
+        // ============================================
+        async function loadAdminData() {
+            await loadPendingUsers();
+            await loadAllUsers();
+        }
+
+        async function loadPendingUsers() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/admin/pending-users`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: currentUser.email })
+                });
+
+                const data = await response.json();
+                const container = document.getElementById('pendingUsersList');
+
+                if (data.users && data.users.length > 0) {
+                    container.innerHTML = data.users.map(user => `
+                <div class="user-card">
+                    <div class="user-card-info">
+                        <div class="user-card-name">${user.name}</div>
+                        <div class="user-card-email">${user.email}</div>
+                        <span class="user-card-role">${user.role}</span>
+                    </div>
+                    <div class="user-card-actions">
+                        <button class="btn btn-approve" onclick="approveUser('${user.id}', '${user.name}')">
+                            ✓ Approve
+                        </button>
+                        <button class="btn btn-deny" onclick="denyUser('${user.id}', '${user.name}')">
+                            ✗ Deny
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+                } else {
+                    container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">✅</div>
+                    <div>No pending approvals</div>
+                </div>
+            `;
+                }
+            } catch (error) {
+                console.error('Error loading pending users:', error);
+                document.getElementById('pendingUsersList').innerHTML = `
+            <div class="empty-state" style="color: #ff6b35;">
+                <div>Error loading pending users</div>
+            </div>
+        `;
+            }
+        }
+
+        async function loadAllUsers() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/admin/all-users`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: currentUser.email })
+                });
+
+                const data = await response.json();
+                const container = document.getElementById('allUsersList');
+
+                if (data.users && data.users.length > 0) {
+                    const approvedUsers = data.users.filter(u => u.status === 'approved');
+
+                    container.innerHTML = approvedUsers.map(user => `
+                <div class="user-card">
+                    <div class="user-card-info">
+                        <div class="user-card-name">${user.name}</div>
+                        <div class="user-card-email">${user.email}</div>
+                        <span class="user-card-role">${user.role}</span>
+                        ${user.subteam ? `<span class="user-card-role" style="background: rgba(255, 107, 53, 0.2); color: #ff6b35; margin-left: 8px;">${user.subteam}</span>` : ''}
+                    </div>
+                    <div class="user-card-actions">
+                        ${currentUser.role === 'coach' && user.id !== currentUser.id ? `
+                            <button class="btn btn-secondary" onclick="changeUserRole('${user.id}', '${user.name}', '${user.role}')">
+                                Change Role
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+                } else {
+                    container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">👥</div>
+                    <div>No users found</div>
+                </div>
+            `;
+                }
+            } catch (error) {
+                console.error('Error loading all users:', error);
+                document.getElementById('allUsersList').innerHTML = `
+            <div class="empty-state" style="color: #ff6b35;">
+                <div>Error loading users</div>
+            </div>
+        `;
+            }
+        }
+
+        async function approveUser(userId, userName) {
+            if (!confirm(`Approve ${userName}?`)) return;
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/admin/approve-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: currentUser.email,
+                        userId: userId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(`${userName} has been approved!`);
+                    await loadAdminData(); // Refresh both lists
+                } else {
+                    alert('Error approving user: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error approving user:', error);
+                alert('Error approving user. Please try again.');
+            }
+        }
+
+        async function denyUser(userId, userName) {
+            if (!confirm(`Deny ${userName}? This cannot be undone.`)) return;
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/admin/deny-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: currentUser.email,
+                        userId: userId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(`${userName} has been denied.`);
+                    await loadPendingUsers(); // Refresh pending list
+                } else {
+                    alert('Error denying user: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error denying user:', error);
+                alert('Error denying user. Please try again.');
+            }
+        }
+
+        async function changeUserRole(userId, userName, currentRole) {
+            const newRole = prompt(`Change role for ${userName}\nCurrent: ${currentRole}\n\nEnter new role (coach/mentor/lead/student/parent):`);
+
+            if (!newRole) return;
+
+            const validRoles = ['coach', 'mentor', 'lead', 'student', 'parent'];
+            if (!validRoles.includes(newRole.toLowerCase())) {
+                alert('Invalid role! Must be: coach, mentor, lead, student, or parent');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/admin/update-role`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: currentUser.email,
+                        userId: userId,
+                        newRole: newRole.toLowerCase()
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(`${userName}'s role changed to ${newRole}!`);
+                    await loadAllUsers(); // Refresh user list
+                } else {
+                    alert('Error changing role: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error changing role:', error);
+                alert('Error changing role. Please try again.');
+            }
+        }
+
+        // ============================================
+        // Logout
+        // ============================================
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('userEmail');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // ============================================
+        // Initialize
+        // ============================================
+        checkAuth();
+    </script>
